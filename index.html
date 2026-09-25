@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Payoneer Embedded Demo</title>
+  <style>
+    iframe{
+      width:650px;
+      height:520px;
+      border:1px solid #ccc;
+      display:none;
+    }
+  </style>
+</head>
+<body>
+  <h2>Embedded Payment Demo</h2>
+  <button id="payBtn">Create Session and Show Embedded Payment Form</button>
+  <iframe id="payFrame"></iframe>
+
+<script>
+const payBtn = document.querySelector('#payBtn');
+const payFrame = document.querySelector('#payFrame');
+
+payBtn.onclick = async function(){
+  try{
+    payBtn.disabled = true;
+    payBtn.innerText = "Creating payment session...";
+
+    const resp = await fetch("https://humped-preschool-enclose.ngrok-free.dev/api/create-session", {
+        method: "POST"
+    });
+
+    const data = await res.json();
+    if(!res.ok) throw new Error(data.error);
+
+    console.log("listUrl:", data.listUrl);
+    payFrame.src = data.listUrl;
+    payFrame.style.display = "block";
+    payBtn.innerText = "Embedded payment form loaded";
+  }catch(err){
+    console.error(err);
+    alert(err.message);
+    payBtn.disabled = false;
+    payBtn.innerText = "Create Session and Show Embedded Payment Form";
+  }
+}
+</script>
+</body>
+</html>
